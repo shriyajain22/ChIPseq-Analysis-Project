@@ -1,0 +1,16 @@
+name: project_env
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - ipykernel
+  - numpy
+  - pandas
+  - matplotlib
+  - seaborn
+  - scanpy
+  - gseapy
+  - jupyter
+  - jupyterlab
+  - nbconvert
+
