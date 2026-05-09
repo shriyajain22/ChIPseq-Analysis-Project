@@ -1,32 +1,138 @@
-# Project 3 Nextflow Template
+# ChIP-seq Analysis Project
 
-For this project, remember to keep in a few things:
+This project implements a reproducible ChIP-seq (Chromatin Immunoprecipitation Sequencing) analysis workflow for identifying protein–DNA binding regions and characterizing genomic enrichment patterns in human cell lines. The pipeline integrates sequencing quality control, genome alignment, peak calling, motif enrichment analysis, genomic signal visualization, and downstream biological interpretation using Nextflow-based bioinformatics workflows.
 
-1. Most of the required references and files can be found in your `nextflow.config`
+ChIP-seq is a widely used epigenomics technique that enables the identification of DNA-binding protein interaction sites, regulatory elements, and transcription factor occupancy across the genome.
 
-2. Make sure you give each process a label to request an appropriate amount of resources
+## Project Objectives
 
-3. Use the singularity containers provided on the website directions for the project
+The primary goals of this project were to:
+- Process and analyze raw ChIP-seq sequencing data
+- Perform sequencing quality control and alignment analysis
+- Generate normalized genomic coverage tracks
+- Identify enriched protein–DNA binding regions
+- Generate reproducible peak sets across biological replicates
+- Perform motif enrichment and genomic annotation analysis
+- Reproduce and compare results from the original publication
+- Develop reproducible and scalable bioinformatics workflows
 
-4. I have given you valid stub commands that will let you troubleshoot your workflow logic using the `-stub-run` command
-- The stub-run commands assume that the first element in the tuple from the initial channel is named `sample_id` in processes
-- Ensure that the appropriate inputs for certain processes are a tuple with the first element being the name from the initial channel
-- The findPeaks stub will not be the same as `sample_id`. Remember that you will need to run findPeaks using the paired samples
-(IP_rep1 + INPUT_rep1) and (IP_rep2 + INPUT_rep2). You should name the peak outputs using the replicate (i.e. rep1_peaks.txt and rep2_peaks.txt)
-- You may alter the names used in the stub-run if it's easier for you
+## Workflow Overview
 
-The stub runs assume that you have something like below so that it can name the fake files using the sample names - this will ensure
-that your stub runs execute the same number of processes as the full pipeline should.
+The analysis pipeline consists of the following major steps:
+
+### 1. Data Acquisition
+- Downloading ChIP-seq datasets from the published study
+- Organizing IP and INPUT paired replicate samples
+
+### 2. Quality Control
+Sequencing quality assessment and preprocessing included:
+- `FastQC`
+- `MultiQC`
+- `Trimmomatic`
+
+This step evaluated:
+- Read quality
+- Adapter contamination
+- Low-quality sequencing regions
+
+### 3. Read Alignment
+Sequencing reads were aligned to the hg38 human reference genome using:
+- `Bowtie2`
+- `samtools`
+
+Additional processing steps included:
+- BAM sorting and indexing
+- Alignment statistics generation using `samtools flagstat`
+
+### 4. Coverage Track Generation
+Normalized genomic coverage tracks were generated using:
+- `deeptools bamCoverage`
+
+Coverage tracks were stored in bigWig format for downstream visualization and signal analysis.
+
+### 5. Correlation Analysis
+Sample similarity and experiment reproducibility were evaluated using:
+- `multiBigwigSummary`
+- `plotCorrelation`
+
+Correlation plots were generated to compare biological replicates and INPUT controls.
+
+### 6. Peak Calling
+Protein–DNA binding regions were identified using:
+- `HOMER makeTagDirectory`
+- `HOMER findPeaks`
+
+Peak calling was performed independently for replicate IP/INPUT sample pairs.
+
+### 7. Reproducible Peak Generation
+Consensus reproducible peaks were generated using:
+- `bedtools intersect`
+
+Additional filtering steps included:
+- Removal of ENCODE blacklist regions
+- Peak reproducibility filtering across replicates
+
+### 8. Peak Annotation
+Filtered peaks were annotated to their nearest genomic features using:
+- `HOMER annotatePeaks.pl`
+
+### 9. Signal Intensity Visualization
+Genomic signal enrichment across gene regions was visualized using:
+- `computeMatrix`
+- `plotProfile`
+
+Signal intensity plots were generated relative to transcription start sites (TSS) and transcription termination sites (TTS).
+
+### 10. Motif Enrichment Analysis
+Motif enrichment analysis was performed using:
+- `HOMER findMotifsGenome.pl`
+
+This analysis identified enriched transcription factor binding motifs within reproducible peak regions.
+
+### 11. Biological Interpretation & Figure Reproduction
+Downstream analysis included:
+- Correlation heatmaps
+- Peak overlap analysis
+- Motif enrichment visualization
+- Genomic track visualization
+- Comparison with RNA-seq datasets
+- Reproduction of selected publication figures
+
+## Tools & Technologies
+
+### Programming & Workflow
+`Python` `R` `Bash` `Nextflow` `Docker` `Conda`
+
+### Bioinformatics Tools
+`FastQC` `MultiQC` `Trimmomatic`  
+`Bowtie2` `samtools` `bedtools`  
+`deeptools` `HOMER`
+
+### Statistical & Visualization Packages
+`ggplot2` `matplotlib` `pandas`
+
+## Repository Structure
+
+```bash
+ChIPseq-Analysis-Project/
+│
+├── bin/                        # Helper scripts
+├── env/                        # Environment configuration files
+├── modules/                    # Nextflow modules
+├── results/                    # Workflow outputs and figures
+├── figures.ipynb               # Figure generation notebook
+├── project3_analysis.ipynb     # Main analysis notebook
+├── project3_analysis.html      # Rendered analysis report
+├── main.nf                     # Main Nextflow workflow
+├── nextflow.config             # Workflow configuration
+├── full_samplesheet.csv        # Full dataset metadata
+├── subsampled_samplesheet.csv  # Subsampled dataset metadata
+├── hg38_genes.bed              # Gene annotation BED file
+└── README.md
 ```
-input:
-tuple val(sample_id), path(file)
-```
+## Citation
 
-5. Use the subsampled data to start out with - you may need to eventually switch to the full data before your
-pipeline is technically complete as sometimes peak calling may fail if not given enough input reads. 
-- When the pipeline is working, change the `params` value in the original channel to the params encoding the
-location of the full_samplesheet.csv
+This workflow was implemented using datasets and analysis concepts from the following publication:  
+Barutcu, A. R., Hong, D., Lajoie, B. R., McCord, R. P., van Wijnen, A. J., Lian, J. B., Stein, J. L., Dekker, J., Imbalzano, A. N., & Stein, G. S. (2016). RUNX1 contributes to higher-order chromatin organization and gene regulation in breast cancer cells. *Biochimica et biophysica acta*, 1859(11), 1389–1397. https://doi.org/10.1016/j.bbagrm.2016.08.003
 
-6. To remove regions using the blacklist, there are optional flags available in the `bedtools intersect` command
-
-7. Create a single jupyter notebook that contains all of the results / figures and your write-up
+Note: This project was developed as part of the Genomic Data Analysis (BF528) coursework at Boston University.
