@@ -135,4 +135,4 @@ ChIPseq-Analysis-Project/
 This workflow was implemented using datasets and analysis concepts from the following publication:  
 Barutcu, A. R., Hong, D., Lajoie, B. R., McCord, R. P., van Wijnen, A. J., Lian, J. B., Stein, J. L., Dekker, J., Imbalzano, A. N., & Stein, G. S. (2016). RUNX1 contributes to higher-order chromatin organization and gene regulation in breast cancer cells. *Biochimica et biophysica acta*, 1859(11), 1389–1397. https://doi.org/10.1016/j.bbagrm.2016.08.003
 
-Note: This project was developed as part of the Genomic Data Analysis (BF528) coursework at Boston University.
+Note: *This project was developed as part of the Genomic Data Analysis (BF528) coursework at Boston University.*
